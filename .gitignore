@@ -1,3 +1,4 @@
+.env
 src/schema.gpl
 # compiled output
 /dist
