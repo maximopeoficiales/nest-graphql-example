@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { StatusArgs } from './dto/args/status.args';
 import { CreateTodoInput } from './dto/inputs/create-todo.input';
 import { UpdateTodoInput } from './dto/inputs/update-todo.input';
 import { Todo } from './entity/todo.entity';
@@ -10,8 +11,24 @@ export class TodoService {
     { id: 2, description: "Todo 2", done: false },
     { id: 3, description: "Todo 3", done: true },
   ]
-  findAll(): Todo[] {
-    return this.todos
+
+  getTotalTodos(): number {
+    return this.todos.length;
+  }
+
+  getCompletedTodos(): number {
+    return this.todos.filter(todo => todo.done).length;
+  }
+  getPendingTodos(): number {
+    return this.todos.filter(todo => !todo.done).length;
+  }
+
+  findAll(statusArgs: StatusArgs): Todo[] {
+    const { status } = statusArgs;
+    if (status !== undefined) {
+      return this.todos.filter(todo => todo.done === status);
+    }
+    return this.todos;
   }
 
   findOne(id: number): Todo {
@@ -26,9 +43,9 @@ export class TodoService {
     return todo;
   }
 
-  updateTodo(updateTodoInput: UpdateTodoInput): Todo {
-    const { done, id, description } = updateTodoInput;
-    const todoToUpdate = this.findOne(updateTodoInput.id);
+  updateTodo(id, updateTodoInput: UpdateTodoInput): Todo {
+    const { done, description } = updateTodoInput;
+    const todoToUpdate = this.findOne(id);
     if (description) todoToUpdate.description = description;
     if (done !== undefined) todoToUpdate.done = done;
 

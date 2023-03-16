@@ -8,6 +8,12 @@ type Todo {
   done: Boolean!
 }
 
+type AgreggationsType {
+  total: Int!
+  pending: Int!
+  completed: Int!
+}
+
 type Query {
   """Hola mundo es lo que retorna"""
   sayHelloWorld: String!
@@ -17,8 +23,15 @@ type Query {
 
   """Desde cero a argumento a predeterminado(6)"""
   getRamdomFromZeroTo(to: Int): Int!
-  todos: [Todo!]!
+  totalTodos: Int!
+  completedTodos: Int!
+  pendingTodos: Int!
+  todos(
+    """What needs to be done"""
+    status: Boolean
+  ): [Todo!]!
   todo(id: Int!): Todo!
+  agreggations: AgreggationsType!
 }
 
 type Mutation {
