@@ -9,6 +9,8 @@ import { TodoModule } from './todo/todo.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsModule } from './items/items.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,7 +34,9 @@ import { ItemsModule } from './items/items.module';
     }),
     HelloWorldModule,
     TodoModule,
-    ItemsModule
+    ItemsModule,
+    UsersModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

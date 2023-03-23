@@ -21,6 +21,19 @@ type Item {
   quantityUnit: String
 }
 
+type User {
+  id: ID!
+  fullName: String!
+  email: String!
+  roles: [String!]!
+  isActive: Boolean!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
 type Query {
   """Hola mundo es lo que retorna"""
   sayHelloWorld: String!
@@ -41,6 +54,8 @@ type Query {
   agreggations: AgreggationsType!
   items: [Item!]!
   item(id: String!): Item!
+  users: [User!]!
+  user(id: ID!): User!
 }
 
 type Mutation {
@@ -50,6 +65,9 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: String!): Boolean!
+  blockUser(id: ID!): User!
+  signin(signupInput: SignupInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
 }
 
 input CreateTodoInput {
@@ -78,4 +96,15 @@ input UpdateItemInput {
   quantity: Float
   quantityUnit: String
   id: Int!
+}
+
+input SignupInput {
+  email: String!
+  fullName: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
