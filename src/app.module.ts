@@ -30,15 +30,15 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       // entities: [],
       synchronize: true,
-      autoLoadEntities: true
+      autoLoadEntities: true,
     }),
     HelloWorldModule,
     TodoModule,
     ItemsModule,
     UsersModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

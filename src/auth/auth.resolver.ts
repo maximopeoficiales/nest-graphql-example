@@ -11,17 +11,16 @@ import { ValidRoles } from './enums/valid-roles.enum';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
-  @Mutation(() => AuthResponse, { name: "signin" })
+  @Mutation(() => AuthResponse, { name: 'signin' })
   async signup(
     @Args('signupInput') signupInput: SignupInput,
   ): Promise<AuthResponse> {
     return await this.authService.signup(signupInput);
   }
 
-
-  @Mutation(() => AuthResponse, { name: "login" })
+  @Mutation(() => AuthResponse, { name: 'login' })
   async login(
     @Args('loginInput') loginInput: LoginInput,
   ): Promise<AuthResponse> {
@@ -29,7 +28,7 @@ export class AuthResolver {
   }
 
   // para por la estrategia , luego el guardar
-  @Query(() => AuthResponse, { name: "revalidateToken" })
+  @Query(() => AuthResponse, { name: 'revalidateToken' })
   @UseGuards(JwtAuthGuard)
   async revalidateToken(
     @CurrentUser([ValidRoles.admin]) user: User,

@@ -1,23 +1,33 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
-import { UsersService } from './users.service';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { ValidRolesArgs } from 'src/auth/dto/args/roles.arg';
+import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from './entities/user.entity';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { UsersService } from './users.service';
 
 @Resolver(() => User)
+@UseGuards(JwtAuthGuard)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) { }
-
+  constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [User], { name: 'users' })
-  async findAll() {
-    return await this.usersService.findAll();
+  async findAll(
+    @Args() validRoles: ValidRolesArgs,
+    @CurrentUser([ValidRoles.admin, ValidRoles.user]) user: User,
+  ) {
+    console.log({ validRoles });
+
+    return await this.usersService.findAll(validRoles.roles);
   }
 
   @Query(() => User, { name: 'user' })
-  async findOne(@Args('id', { type: () => ID }) id: string) {
-    // return await this.usersService.findOne(id);
-    throw new Error('Method not implemented.');
+  async findOne(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser([ValidRoles.admin, ValidRoles.user]) user: User,
+  ) {
+    return await this.usersService.findOneById(id);
   }
 
   // @Mutation(() => User)
@@ -25,8 +35,11 @@ export class UsersResolver {
   //   return this.usersService.update(updateUserInput.id, updateUserInput);
   // }
 
-  @Mutation(() => User)
-  async blockUser(@Args('id', { type: () => ID }) id: string) {
-    return await this.usersService.blockUser(id);
+  @Mutation(() => User, { name: 'blockUser' })
+  async blockUser(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser([ValidRoles.admin, ValidRoles.user]) user: User,
+  ) {
+    return await this.usersService.blockUser(id, user);
   }
 }

@@ -1,10 +1,10 @@
 import { ObjectType, Field, Float, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'items' })
 @ObjectType()
 export class Item {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
 

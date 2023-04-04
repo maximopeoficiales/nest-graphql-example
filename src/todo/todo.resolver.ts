@@ -8,66 +8,57 @@ import { AgreggationsType } from './types/agreggations.type';
 
 @Resolver(() => Todo)
 export class TodoResolver {
-  constructor(
-    private readonly todoService: TodoService
-  ) {
-  }
+  constructor(private readonly todoService: TodoService) {}
 
-  @Query(() => Int, { name: "totalTodos" })
+  @Query(() => Int, { name: 'totalTodos' })
   getTotalTodos(): number {
     return this.todoService.getTotalTodos();
   }
 
-  @Query(() => Int, { name: "completedTodos" })
+  @Query(() => Int, { name: 'completedTodos' })
   getCompletedTodos(): number {
     return this.todoService.getCompletedTodos();
   }
 
-  @Query(() => Int, { name: "pendingTodos" })
+  @Query(() => Int, { name: 'pendingTodos' })
   getPendingTodos(): number {
     return this.todoService.getPendingTodos();
   }
 
-  @Query(() => [Todo], { name: "todos" })
-  findAll(
-    @Args() statusArgs: StatusArgs
-  ): Todo[] {
-    return this.todoService.findAll(statusArgs)
+  @Query(() => [Todo], { name: 'todos' })
+  findAll(@Args() statusArgs: StatusArgs): Todo[] {
+    return this.todoService.findAll(statusArgs);
   }
-  @Query(() => Todo, { name: "todo" })
-  findOne(
-    @Args({ name: "id", type: () => Int }) id: number
-  ): Todo {
+  @Query(() => Todo, { name: 'todo' })
+  findOne(@Args({ name: 'id', type: () => Int }) id: number): Todo {
     return this.todoService.findOne(id);
   }
 
-  @Mutation(() => Todo, { name: "createTodo" })
+  @Mutation(() => Todo, { name: 'createTodo' })
   createTodo(
-    @Args({ name: "createTodoInput" }) createTodoInput: CreateTodoInput
+    @Args({ name: 'createTodoInput' }) createTodoInput: CreateTodoInput,
   ): Todo {
     return this.todoService.createTodo(createTodoInput);
   }
 
-  @Mutation(() => Todo, { name: "updateTodo" })
+  @Mutation(() => Todo, { name: 'updateTodo' })
   updateTodo(
-    @Args({ name: "updateTodoInput" }) updateTodoInput: UpdateTodoInput
+    @Args({ name: 'updateTodoInput' }) updateTodoInput: UpdateTodoInput,
   ) {
     return this.todoService.updateTodo(updateTodoInput.id, updateTodoInput);
   }
 
-  @Mutation(() => Boolean, { name: "deleteTodo" })
-  removeTodo(
-    @Args({ name: "id", type: () => Int }) id: number
-  ) {
+  @Mutation(() => Boolean, { name: 'deleteTodo' })
+  removeTodo(@Args({ name: 'id', type: () => Int }) id: number) {
     return this.todoService.deleteTodo(id);
   }
 
-  @Query(() => AgreggationsType, { name: "agreggations" })
+  @Query(() => AgreggationsType, { name: 'agreggations' })
   agreggations(): AgreggationsType {
     return {
       completed: this.todoService.getCompletedTodos(),
       pending: this.todoService.getPendingTodos(),
-      total: this.todoService.getTotalTodos()
-    }
+      total: this.todoService.getTotalTodos(),
+    };
   }
 }

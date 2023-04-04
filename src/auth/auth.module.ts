@@ -18,11 +18,10 @@ import { UsersModule } from 'src/users/users.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: "4h" }
-      })
+        signOptions: { expiresIn: '4h' },
+      }),
     }),
     UsersModule,
   ],
-
 })
-export class AuthModule { }
+export class AuthModule {}

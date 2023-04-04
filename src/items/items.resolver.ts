@@ -1,16 +1,16 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { ItemsService } from './items.service';
-import { Item } from './entities/item.entity';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateItemInput } from './dto/create-item.input';
 import { UpdateItemInput } from './dto/update-item.input';
+import { Item } from './entities/item.entity';
+import { ItemsService } from './items.service';
 
 @Resolver(() => Item)
 export class ItemsResolver {
-  constructor(private readonly itemsService: ItemsService) { }
+  constructor(private readonly itemsService: ItemsService) {}
 
   @Mutation(() => Item)
   async createItem(
-    @Args('createItemInput') createItemInput: CreateItemInput
+    @Args('createItemInput') createItemInput: CreateItemInput,
   ): Promise<Item> {
     return await this.itemsService.create(createItemInput);
   }
@@ -21,22 +21,20 @@ export class ItemsResolver {
   }
 
   @Query(() => Item, { name: 'item' })
-  async findOne(
-    @Args('id', { type: () => String }) id: string
-  ): Promise<Item> {
+  async findOne(@Args('id', { type: () => String }) id: string): Promise<Item> {
     return await this.itemsService.findOne(id);
   }
 
   @Mutation(() => Item)
   async updateItem(
-    @Args('updateItemInput') updateItemInput: UpdateItemInput
+    @Args('updateItemInput') updateItemInput: UpdateItemInput,
   ): Promise<Item> {
     return await this.itemsService.update(updateItemInput.id, updateItemInput);
   }
 
   @Mutation(() => Boolean)
   async removeItem(
-    @Args('id', { type: () => String }) id: string
+    @Args('id', { type: () => String }) id: string,
   ): Promise<boolean> {
     return await this.itemsService.remove(id);
   }

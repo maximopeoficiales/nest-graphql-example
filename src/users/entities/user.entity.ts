@@ -1,10 +1,16 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 @Entity({ name: 'users' })
 @ObjectType()
 export class User {
   // @Field(() => Int, { description: 'Example field (placeholder)' })
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
 
@@ -22,16 +28,24 @@ export class User {
   @Column({
     type: 'text',
     array: true,
-    default: ["user"]
+    default: ['user'],
   })
   @Field(() => [String])
   roles: string[];
 
-
   @Column({
     type: 'boolean',
-    default: true
+    default: true,
   })
   @Field(() => Boolean)
   isActive: boolean;
+
+  // TODO: Relaciones
+  @ManyToOne(() => User, (user) => user.lastUpdateBy, {
+    nullable: true,
+    lazy: true,
+  })
+  @JoinColumn({ name: 'lastUpdateBy' })
+  @Field(() => User, { nullable: true })
+  lastUpdateBy?: User;
 }

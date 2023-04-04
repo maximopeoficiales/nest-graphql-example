@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Todo {
@@ -9,5 +9,5 @@ export class Todo {
   description: string;
 
   @Field(() => Boolean)
-  done: boolean = false;
+  done = false;
 }

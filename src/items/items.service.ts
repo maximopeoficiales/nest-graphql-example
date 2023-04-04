@@ -10,9 +10,8 @@ import { Item } from './entities/item.entity';
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
-    private readonly repository: Repository<Item>
-  ) {
-  }
+    private readonly repository: Repository<Item>,
+  ) {}
   async create(createItemInput: CreateItemInput): Promise<Item> {
     const newItem = this.repository.create(createItemInput);
     await this.repository.save(newItem);

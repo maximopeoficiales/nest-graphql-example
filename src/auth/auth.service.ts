@@ -10,11 +10,10 @@ import { UnauthorizedException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
   private getJwtToken(userId: string) {
     const token = this.jwtService.sign({ id: userId });
     return token;
@@ -24,8 +23,8 @@ export class AuthService {
     const token = this.getJwtToken(user.id);
     return {
       token,
-      user
-    }
+      user,
+    };
   }
   async login(loginInput: LoginInput): Promise<AuthResponse> {
     const { email, password } = loginInput;
@@ -42,8 +41,8 @@ export class AuthService {
     const token = this.getJwtToken(user.id);
     return {
       token,
-      user
-    }
+      user,
+    };
   }
 
   async validateUser(id: string): Promise<User> {

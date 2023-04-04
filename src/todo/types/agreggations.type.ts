@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class AgreggationsType {
@@ -6,7 +6,6 @@ export class AgreggationsType {
   total: number;
 
   @Field(() => Int)
-
   pending: number;
   @Field(() => Int)
   completed: number;

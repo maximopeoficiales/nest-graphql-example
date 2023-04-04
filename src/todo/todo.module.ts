@@ -5,4 +5,4 @@ import { TodoService } from './todo.service';
 @Module({
   providers: [TodoResolver, TodoService],
 })
-export class TodoModule { }
+export class TodoModule {}
