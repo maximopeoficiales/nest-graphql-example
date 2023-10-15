@@ -58,8 +58,20 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(
+    updateUserInput: UpdateUserInput,
+    updateBy: User,
+  ): Promise<User> {
+    try {
+      const user = await this.userRepository.preload({
+        ...updateUserInput,
+        id: updateUserInput.id,
+      });
+      user.lastUpdateBy = updateBy;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 
   async blockUser(id: string, user: User): Promise<User> {
@@ -67,7 +79,7 @@ export class UsersService {
     userToBlock.isActive = false;
     userToBlock.lastUpdateBy = user;
 
-    throw new Error('Method not implemented.');
+    return await this.userRepository.save(userToBlock);
   }
 
   private handleDBErrors(error: any) {
