@@ -19,29 +19,34 @@ export class ItemsService {
     return newItem;
   }
 
-  async findAll(): Promise<Item[]> {
+  async findAll(user: User): Promise<Item[]> {
     // TODO: filtrar,paginar, por usuario
-    return await this.repository.find();
+    return await this.repository.find({
+      where: {
+        id: user.id,
+      },
+    });
   }
 
-  async findOne(id: string): Promise<Item> {
-    const findItem = await this.repository.findOne({ where: { id: id } });
-    if (!findItem) throw new NotFoundException(`Item not found with id: ${id}`);
-    return findItem;
+  async findOne(id: string, user: User): Promise<Item> {
+    const item = await this.repository.findOneBy({
+      id,
+      user: { id: user.id },
+    });
+    if (!item) throw new NotFoundException(`Item not found with id: ${id}`);
+    return item;
   }
 
-  async update(id: string, updateItemInput: UpdateItemInput) {
-    const findItem = await this.findOne(id);
-    const { name, quantityUnit } = updateItemInput;
-    if (name) findItem.name = name;
-    // if (quantity) findItem.quantity = quantity;
-    if (quantityUnit) findItem.quantityUnit = quantityUnit;
-    await this.repository.save(findItem);
-    return findItem;
+  async update(id: string, updateItemInput: UpdateItemInput, user: User) {
+    await this.findOne(id, user);
+    const item = await this.repository.preload({ ...updateItemInput, id });
+    if (!item) throw new NotFoundException(`Item with id: ${id} not found`);
+    await this.repository.save(item);
+    return item;
   }
 
-  async remove(id: string) {
-    const findItem = await this.findOne(id);
+  async remove(id: string, user: User) {
+    const findItem = await this.findOne(id, user);
     const deleteResult = await this.repository.delete({
       id: findItem.id,
     });

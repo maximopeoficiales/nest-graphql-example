@@ -1,12 +1,12 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { User } from 'src/users/entities/user.entity';
 import { CreateItemInput } from './dto/create-item.input';
 import { UpdateItemInput } from './dto/update-item.input';
 import { Item } from './entities/item.entity';
 import { ItemsService } from './items.service';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { User } from 'src/users/entities/user.entity';
 
 @Resolver(() => Item)
 @UseGuards(JwtAuthGuard)
@@ -22,26 +22,35 @@ export class ItemsResolver {
   }
 
   @Query(() => [Item], { name: 'items' })
-  async findAll(): Promise<Item[]> {
-    return await this.itemsService.findAll();
+  async findAll(@CurrentUser() user: User): Promise<Item[]> {
+    return await this.itemsService.findAll(user);
   }
 
   @Query(() => Item, { name: 'item' })
-  async findOne(@Args('id', { type: () => String }) id: string): Promise<Item> {
-    return await this.itemsService.findOne(id);
+  async findOne(
+    @Args('id', { type: () => String }) id: string,
+    @CurrentUser() user: User,
+  ): Promise<Item> {
+    return await this.itemsService.findOne(id, user);
   }
 
   @Mutation(() => Item)
   async updateItem(
     @Args('updateItemInput') updateItemInput: UpdateItemInput,
+    @CurrentUser() user: User,
   ): Promise<Item> {
-    return await this.itemsService.update(updateItemInput.id, updateItemInput);
+    return await this.itemsService.update(
+      updateItemInput.id,
+      updateItemInput,
+      user,
+    );
   }
 
   @Mutation(() => Boolean)
   async removeItem(
     @Args('id', { type: () => String }) id: string,
+    @CurrentUser() user: User,
   ): Promise<boolean> {
-    return await this.itemsService.remove(id);
+    return await this.itemsService.remove(id, user);
   }
 }
