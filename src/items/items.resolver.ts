@@ -3,16 +3,22 @@ import { CreateItemInput } from './dto/create-item.input';
 import { UpdateItemInput } from './dto/update-item.input';
 import { Item } from './entities/item.entity';
 import { ItemsService } from './items.service';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @Resolver(() => Item)
+@UseGuards(JwtAuthGuard)
 export class ItemsResolver {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Mutation(() => Item)
   async createItem(
     @Args('createItemInput') createItemInput: CreateItemInput,
+    @CurrentUser() user: User,
   ): Promise<Item> {
-    return await this.itemsService.create(createItemInput);
+    return await this.itemsService.create(createItemInput, user);
   }
 
   @Query(() => [Item], { name: 'items' })
