@@ -4,18 +4,20 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 
-import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
 import { HelloWorldModule } from './hello-world/hello-world.module';
 import { ItemsModule } from './items/items.module';
+import { SeedModule } from './seed/seed.module';
 import { TodoModule } from './todo/todo.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [AuthModule],
@@ -39,22 +41,27 @@ import { UsersModule } from './users/users.module';
     //   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     //   plugins: [ApolloServerPluginLandingPageLocalDefault()],
     // }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      // entities: [],
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+        // entities: [],
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
     }),
     HelloWorldModule,
     TodoModule,
     ItemsModule,
     UsersModule,
     AuthModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],
