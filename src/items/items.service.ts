@@ -52,4 +52,10 @@ export class ItemsService {
     });
     return deleteResult.affected > 0;
   }
+
+  async itemCountByUser(user: User): Promise<number> {
+    return await this.repository.count({
+      where: { user: { id: user.id } },
+    });
+  }
 }

@@ -17,6 +17,7 @@ type User {
   isActive: Boolean!
   lastUpdateBy: User
   items: [Item!]!
+  itemCount: Int!
 }
 
 type AuthResponse {
@@ -40,6 +41,8 @@ type Query {
   revalidateToken: AuthResponse!
   users(roles: [ValidRoles!] = []): [User!]!
   user(id: ID!): User!
+  items: [Item!]!
+  item(id: String!): Item!
 
   """Hola mundo es lo que retorna"""
   sayHelloWorld: String!
@@ -58,8 +61,6 @@ type Query {
   ): [Todo!]!
   todo(id: Int!): Todo!
   agreggations: AgreggationsType!
-  items: [Item!]!
-  item(id: String!): Item!
 }
 
 enum ValidRoles {
@@ -73,12 +74,12 @@ type Mutation {
   login(loginInput: LoginInput!): AuthResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
   blockUser(id: ID!): User!
-  createTodo(createTodoInput: CreateTodoInput!): Todo!
-  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
-  deleteTodo(id: Int!): Boolean!
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: String!): Boolean!
+  createTodo(createTodoInput: CreateTodoInput!): Todo!
+  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
+  deleteTodo(id: Int!): Boolean!
 }
 
 input SignupInput {
@@ -101,6 +102,18 @@ input UpdateUserInput {
   isActive: Boolean = true
 }
 
+input CreateItemInput {
+  name: String!
+  quantityUnit: String
+}
+
+input UpdateItemInput {
+  name: String
+  quantityUnit: String
+  id: Int!
+  quantity: Float
+}
+
 input CreateTodoInput {
   """What needs to be done"""
   description: String!
@@ -114,16 +127,4 @@ input UpdateTodoInput {
 
   """Done todo?"""
   done: Boolean
-}
-
-input CreateItemInput {
-  name: String!
-  quantityUnit: String
-}
-
-input UpdateItemInput {
-  name: String
-  quantityUnit: String
-  id: Int!
-  quantity: Float
 }
