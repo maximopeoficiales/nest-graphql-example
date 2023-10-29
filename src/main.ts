@@ -7,11 +7,11 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      // forbidNonWhitelisted: true,
     }),
   );
   await app.listen(process.env.PORT);
   console.log(`🚀 Server ready at http://localhost:${process.env.PORT}`);
-  console.log(`📚 Api Doc http://localhost:${process.env.PORT}/api/docs`);
+  console.log(`📚 Apollo GraphQL http://localhost:${process.env.PORT}/graphql`);
 }
 bootstrap();

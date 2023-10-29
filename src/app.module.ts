@@ -14,6 +14,7 @@ import { ItemsModule } from './items/items.module';
 import { SeedModule } from './seed/seed.module';
 import { TodoModule } from './todo/todo.module';
 import { UsersModule } from './users/users.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     AuthModule,
     SeedModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
